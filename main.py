@@ -95,6 +95,9 @@ def listen_for_answer():
 #---------------------------------------------------
 # Conducting the Interview
 #---------------------------------------------------
+
+interview_answers=[]
+
 def conduct_interview():
     for i, question in enumerate(questions):
         print(f"Q{i+1}: {question}")
@@ -103,9 +106,11 @@ def conduct_interview():
         user_answer = None
         while user_answer is None:
             user_answer = listen_for_answer()
+            interview_answers.append(user_answer)
 
         print(f"Your Answer: {user_answer}\n")
         speak("Thank you for your response.")
 
 # Start the interview
 conduct_interview()
+print(interview_answers)
