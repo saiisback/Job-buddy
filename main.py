@@ -11,54 +11,76 @@ genai.configure(api_key="AIzaSyCrz_SVCJ3tMEq2IXs6wdGK--jzhwB9NzE")
 role = input("Enter the job role you want interview questions for: ")
 
 prompt = """
-You are an AI specialized in generating interview questions and model answers for specific job roles. I need a set of 10 comprehensive interview questions along with detailed answers for the job role of {job_role}. These questions should assess the candidate’s:
+You are an AI specialized in generating interview questions and detailed model answers for specific job roles. 
+
+Generate a set of 10 comprehensive interview questions for the job role of {job_role} in the following format:
+
+[
+    ["Question 1", "Answer 1", "Difficulty (Beginner/Intermediate/Advanced)"],
+    ["Question 2", "Answer 2", "Difficulty (Beginner/Intermediate/Advanced)"],
+    ...
+]
+
+These questions should assess the candidate’s:
 1. Core technical skills.
 2. Problem-solving abilities.
 3. Communication and teamwork skills.
 4. Industry-specific knowledge.
 5. Analytical and creative thinking.
 
-Provide a mix of beginner, intermediate, and advanced-level questions. Format the output as follows:
+Provide a balanced mix of beginner, intermediate, and advanced-level questions. Ensure all questions and answers are relevant to the specified job role, concise, and reflect current industry standards. 
 
-1. Question: <Insert question>
-   Answer: <Insert detailed answer>
-   Level: <Beginner/Intermediate/Advanced>
-
-Ensure the questions and answers are relevant to the given role, reflect current industry standards, and are concise yet informative.
+Ensure the format makes it easy to sort questions, answers, and difficulty levels programmatically.
 """
 
-response = genai.generate_text(model="gemini-1.5-flash", prompt=prompt.format(job_role=role))
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+print("Generating your questions.....")
+
+response = model.generate_content(prompt.format(job_role=role))
+
 
 # Save the response to a file
-file_name = "info.txt"
-with open(file_name, "w") as file:
-    file.write(response.result)
+info = response.text
 
-print("Questions and answers saved to info.txt")
+print("Sorting the questions.....")
 
 #---------------------------------------------------
 # Extracting Questions, Answers, and Levels
 #---------------------------------------------------
-# Read the content of the file
-with open(file_name, "r") as file:
-    text = file.read()
+# Now we parse the content correctly for sorting.
+# Example format: [["Question 1", "Answer 1", "Beginner"], ...]
 
-# Regex patterns to extract data
-question_pattern = r'Question:\s*(.*?)\n\s*Answer:'
-answer_pattern = r'Answer:\s*(.*?)\n\s*Level:'
-level_pattern = r'Level:\s*(\w+)'
+# Assuming the response is a valid string in the format provided in the prompt
+questions = []
+answers = []
+difficulty = []
+def parse_interview_data(response_text):
+    # Removing unwanted characters and splitting into manageable sections
+    raw_data = re.findall(r'\["(.*?)", "(.*?)", "(.*?)"\]', response_text)
 
-# Extracting data using regex
-questions = re.findall(question_pattern, text, re.DOTALL)
-answers = re.findall(answer_pattern, text, re.DOTALL)
-levels = re.findall(level_pattern, text)
+    for question, answer, diff in raw_data:
+        questions.append(question)
+        answers.append(answer)
+        difficulty.append(diff)
 
-# Cleaning up white spaces
-questions = [q.strip() for q in questions]
-answers = [a.strip() for a in answers]
-levels = [l.strip() for l in levels]
+    # Combine into a sorted list of tuples for easy access
+    sorted_data = []
+    for i in range(len(questions)):
+        sorted_data.append({
+            "question": questions[i],
+            "answer": answers[i],
+            "difficulty": difficulty[i]
+        })
 
-print("Questions, answers, and levels extracted.")
+    return sorted_data
+
+# Parse the response
+interview_data = parse_interview_data(response.text)
+
+# Print the sorted data
+#for item in interview_data:
+#    print(f"Question: {item['question']}\nAnswer: {item['answer']}\nDifficulty: {item['difficulty']}\n")
 
 #---------------------------------------------------
 # Text-to-Speech Converter
@@ -66,7 +88,7 @@ print("Questions, answers, and levels extracted.")
 def speak(audio):
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[1].id)  # Choose the second voice (if available)
+    engine.setProperty('voice', voices[0].id)  # Choose the first voice (if available)
     engine.say(audio)
     engine.runAndWait()
 
@@ -96,21 +118,40 @@ def listen_for_answer():
 # Conducting the Interview
 #---------------------------------------------------
 
-interview_answers=[]
+interview_answers = []
 
-def conduct_interview():
-    for i, question in enumerate(questions):
-        print(f"Q{i+1}: {question}")
-        speak(f"Question {i+1}. {question}")
+# Now iterate through sorted interview data
+for i, item in enumerate(interview_data):
+    print(f"Q{i+1}: {item['question']}")
+    speak(f"Question {i+1}. {item['question']}")
 
-        user_answer = None
-        while user_answer is None:
+    user_answer = None
+    while user_answer is None:
+        if user_answer != None:
             user_answer = listen_for_answer()
             interview_answers.append(user_answer)
+        else:
+            user_answer = listen_for_answer()
 
-        print(f"Your Answer: {user_answer}\n")
-        speak("Thank you for your response.")
+    print(f"Recorded answer for this question: {user_answer}\n")
+    speak("Thank you for your response.")
 
-# Start the interview
-conduct_interview()
+# Display all interview answers
 print(interview_answers)
+
+#---------------------------------------------------
+# checking Answers
+#---------------------------------------------------
+
+final_answers=[]
+for i in range(len(questions)):
+    user_answers=[]
+    user_answers.append(questions[i])
+    user_answers.append(answers[i])
+    user_answers.append(interview_answers[i])
+    user_answers.append(difficulty[i])
+    final_answers.append(user_answers)
+
+print(final_answers)
+    
+    
