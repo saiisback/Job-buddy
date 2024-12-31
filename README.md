@@ -38,14 +38,14 @@ The script uses the following Python modules:
          - For regular expressions to parse and extract structured data from the AI-generated response.  
 
    **Third-party Modules**  
-      2. **`google.generativeai`**:  
+      1. **`google.generativeai`**:  
          - To interact with Google's generative AI model (Gemini).  
          - Requires the `google-generativeai` library.  
 
-      3. **`pyttsx3`**:  
+      2. **`pyttsx3`**:  
          - For text-to-speech functionality to read out questions and feedback.  
 
-      4. **`speech_recognition` (as `sr`)**:  
+      3. **`speech_recognition` (as `sr`)**:  
          - For converting user speech into text during the interview process.  
 
       ### Modules Installation  
