@@ -1,5 +1,3 @@
-
-```
 # Job Buddy - Zero Model Version  
 
 Job Buddy is a platform aimed at helping students and job seekers prepare for interviews, find job opportunities, and receive AI mentorship. This is the initial "Zero Model" version of the platform, laying the groundwork for future improvements.  
