@@ -30,34 +30,35 @@ Ensure you have the following installed on your system:
    ```
 The script uses the following Python modules:  
 
-### **Built-in Modules**  
-1. **`re`**:  
-   - For regular expressions to parse and extract structured data from the AI-generated response.  
 
-### **Third-party Modules**  
-2. **`google.generativeai`**:  
-   - To interact with Google's generative AI model (Gemini).  
-   - Requires the `google-generativeai` library.  
+3. **Install dependencies**:
 
-3. **`pyttsx3`**:  
-   - For text-to-speech functionality to read out questions and feedback.  
+   **Built-in Modules**  
+      1. **`re`**:  
+         - For regular expressions to parse and extract structured data from the AI-generated response.  
 
-4. **`speech_recognition` (as `sr`)**:  
-   - For converting user speech into text during the interview process.  
+   **Third-party Modules**  
+      2. **`google.generativeai`**:  
+         - To interact with Google's generative AI model (Gemini).  
+         - Requires the `google-generativeai` library.  
 
-### Modules Installation  
-To use this script, you need to install the following third-party libraries using `pip`:  
+      3. **`pyttsx3`**:  
+         - For text-to-speech functionality to read out questions and feedback.  
 
-```bash
-pip install google-generativeai pyttsx3 SpeechRecognition
-```  
+      4. **`speech_recognition` (as `sr`)**:  
+         - For converting user speech into text during the interview process.  
+
+      ### Modules Installation  
+      To use this script, you need to install the following third-party libraries using `pip`:  
+
+      ```bash
+      pip install google-generativeai pyttsx3 SpeechRecognition
+      ```  
 
 ### Additional Notes  
-- Ensure your microphone and audio output devices are configured correctly for `speech_recognition` and `pyttsx3` to function seamlessly.  
-- The `google.generativeai` library requires an API key, which you must configure before running the script.  
+      - Ensure your microphone and audio output devices are configured correctly for `speech_recognition` and `pyttsx3` to function seamlessly.  
+      - The `google.generativeai` library requires an API key, which you must configure before running the script.  
 
-Let me know if you need further clarification!
-3. **Install dependencies**:
 
    It's recommended to use a virtual environment to manage dependencies. If you're using `venv`, you can set it up as follows:
 
